@@ -1,1 +1,395 @@
-Publish NEXA Calculator
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b0d14">
+<title>NEXA Calculator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --bg: #0b0d14;
+  --panel: #131722;
+  --key: #1c2230;
+  --text: #f5f7ff;
+  --muted: #818ba2;
+  --accent: #a78bfa;
+  --accent2: #6d5dfc;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at top, #222044 0%, transparent 50%),
+    var(--bg);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.app {
+  width: 100%;
+  max-width: 390px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 45px;
+  height: 45px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #c4b5fd, #6d5dfc);
+  color: white;
+  font-size: 25px;
+  font-weight: 900;
+  box-shadow: 0 5px 25px #7660fa44;
+}
+
+.brand h1 {
+  font-size: 21px;
+  letter-spacing: 2px;
+}
+
+.brand p {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 3px;
+  letter-spacing: 1px;
+}
+
+.status {
+  color: #a5f3c4;
+  font-size: 11px;
+  background: #163126;
+  padding: 7px 10px;
+  border-radius: 20px;
+}
+
+.calculator {
+  background: #121620ee;
+  border: 1px solid #ffffff10;
+  border-radius: 30px;
+  padding: 22px;
+  box-shadow: 0 25px 80px #0005;
+}
+
+.screen {
+  min-height: 160px;
+  padding: 15px 5px 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.screen-label {
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+}
+
+.expression {
+  color: #a6aec3;
+  font-size: 20px;
+  min-height: 30px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.result {
+  font-size: clamp(35px, 10vw, 48px);
+  font-weight: 650;
+  letter-spacing: -2px;
+  margin-top: 8px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 11px;
+}
+
+button {
+  border: 0;
+  border-radius: 19px;
+  min-width: 0;
+  height: 64px;
+  background: var(--key);
+  color: var(--text);
+  font-size: 21px;
+  font-weight: 550;
+  cursor: pointer;
+  transition: transform .12s, filter .12s, background .12s;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active {
+  transform: scale(.94);
+  filter: brightness(1.3);
+}
+
+button.utility {
+  background: #282d3c;
+  color: #c4b5fd;
+}
+
+button.operator {
+  background: #282343;
+  color: #c4b5fd;
+  font-size: 25px;
+}
+
+button.zero {
+  grid-column: span 2;
+}
+
+button.equals {
+  background: linear-gradient(135deg, #a78bfa, #6d5dfc);
+  color: white;
+  box-shadow: 0 6px 20px #7560fc35;
+}
+
+.footer {
+  text-align: center;
+  color: #70798d;
+  font-size: 11px;
+  margin-top: 22px;
+  letter-spacing: 1px;
+}
+
+.footer span {
+  color: #b5a5ff;
+}
+
+@media (max-height: 720px) {
+  body { padding: 12px; }
+  .header { margin-bottom: 12px; }
+  .calculator { padding: 16px; }
+  .screen { min-height: 125px; }
+  button { height: 55px; border-radius: 15px; }
+  .keys { gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button { transition: none; }
+}
+</style>
+</head>
+
+<body>
+<main class="app">
+  <header class="header">
+    <div class="brand">
+      <div class="logo">N</div>
+      <div>
+        <h1>NEXA</h1>
+        <p>SMART CALCULATOR</p>
+      </div>
+    </div>
+    <div class="status">● READY</div>
+  </header>
+
+  <section class="calculator" aria-label="Calculator">
+    <div class="screen" aria-live="polite">
+      <div class="screen-label">CALCULATION</div>
+      <div class="expression" id="expression">Ready to calculate</div>
+      <div class="result" id="result">0</div>
+    </div>
+
+    <div class="keys">
+      <button class="utility" data-action="clear">AC</button>
+      <button class="utility" data-action="delete">DEL</button>
+      <button class="utility" data-value="%">%</button>
+      <button class="operator" data-value="÷">÷</button>
+
+      <button data-value="7">7</button>
+      <button data-value="8">8</button>
+      <button data-value="9">9</button>
+      <button class="operator" data-value="×">×</button>
+
+      <button data-value="4">4</button>
+      <button data-value="5">5</button>
+      <button data-value="6">6</button>
+      <button class="operator" data-value="-">−</button>
+
+      <button data-value="1">1</button>
+      <button data-value="2">2</button>
+      <button data-value="3">3</button>
+      <button class="operator" data-value="+">+</button>
+
+      <button class="utility" data-value="(">(</button>
+      <button class="utility" data-value=")">)</button>
+      <button data-value=".">.</button>
+      <button class="operator" data-action="sign">+/−</button>
+
+      <button class="zero" data-value="0">0</button>
+      <button class="equals" data-action="equals">=</button>
+    </div>
+  </section>
+
+  <footer class="footer">
+    DESIGNED WITH <span>✦</span> BY NEXA
+  </footer>
+</main>
+
+<script>
+const expressionEl = document.getElementById("expression");
+const resultEl = document.getElementById("result");
+
+let expression = "";
+let justCalculated = false;
+
+function formatNumber(number) {
+  if (!Number.isFinite(number)) return "Error";
+  if (Math.abs(number) >= 1e12 || 
+      (Math.abs(number) > 0 && Math.abs(number) < 1e-7)) {
+    return number.toExponential(6);
+  }
+  return Number(number.toPrecision(12)).toLocaleString("en-US", {
+    maximumFractionDigits: 10,
+    useGrouping: true
+  });
+}
+
+function calculate(input) {
+  let s = input.replace(/×/g, "*").replace(/÷/g, "/");
+
+  if (!s || !/^[0-9+\-*/().%\s]+$/.test(s)) {
+    throw new Error("Invalid expression");
+  }
+
+  // Convert percentages into decimal values.
+  s = s.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+
+  // Accept only a limited arithmetic expression.
+  const value = Function('"use strict"; return (' + s + ')')();
+
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error("Math error");
+  }
+  return value;
+}
+
+function update() {
+  expressionEl.textContent = expression || "Ready to calculate";
+
+  if (!expression) {
+    resultEl.textContent = "0";
+    return;
+  }
+
+  try {
+    resultEl.textContent = formatNumber(calculate(expression));
+  } catch {
+    resultEl.textContent = " ";
+  }
+}
+
+function addValue(value) {
+  if (justCalculated && /[0-9.(]/.test(value)) {
+    expression = "";
+  }
+  justCalculated = false;
+  expression += value;
+  update();
+}
+
+function clearAll() {
+  expression = "";
+  justCalculated = false;
+  update();
+}
+
+function deleteLast() {
+  expression = expression.slice(0, -1);
+  justCalculated = false;
+  update();
+}
+
+function toggleSign() {
+  if (!expression) {
+    expression = "-";
+  } else if (expression.startsWith("-")) {
+    expression = expression.slice(1);
+  } else {
+    expression = "-" + expression;
+  }
+  justCalculated = false;
+  update();
+}
+
+function showResult() {
+  if (!expression) return;
+  try {
+    const original = expression;
+    const answer = calculate(expression);
+    expression = String(Number(answer.toPrecision(12)));
+    expressionEl.textContent = original + " =";
+    resultEl.textContent = formatNumber(answer);
+    justCalculated = true;
+  } catch {
+    resultEl.textContent = "Error";
+  }
+}
+
+document.querySelector(".keys").addEventListener("click", event => {
+  const button = event.target.closest("button");
+  if (!button) return;
+
+  const action = button.dataset.action;
+  const value = button.dataset.value;
+
+  if (action === "clear") clearAll();
+  else if (action === "delete") deleteLast();
+  else if (action === "equals") showResult();
+  else if (action === "sign") toggleSign();
+  else if (value) addValue(value);
+});
+
+document.addEventListener("keydown", event => {
+  if (/^[0-9.]$/.test(event.key)) addValue(event.key);
+  else if (event.key === "+") addValue("+");
+  else if (event.key === "-") addValue("-");
+  else if (event.key === "*") addValue("×");
+  else if (event.key === "/") {
+    event.preventDefault();
+    addValue("÷");
+  }
+  else if (event.key === "%") addValue("%");
+  else if (event.key === "(" || event.key === ")") addValue(event.key);
+  else if (event.key === "Enter" || event.key === "=") showResult();
+  else if (event.key === "Backspace") deleteLast();
+  else if (event.key === "Escape") clearAll();
+});
+</script>
+</body>
+</html>
